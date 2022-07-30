@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_application_1/Wallet.dart';
+import 'package:intl/intl.dart';
 
 class Task extends StatefulWidget {
   final String description;
   final String photo;
   final int difficulty;
+  final double reward;
+  final Wallet? wallet;
 
   const Task({
     Key? key,
-    required String this.description,
-    required String this.photo,
-    required int this.difficulty,
+    required this.description,
+    required this.photo,
+    required this.difficulty,
+    required this.reward,
+    this.wallet,
   }) : super(key: key);
 
   @override
@@ -24,6 +30,10 @@ class _TaskState extends State<Task> {
   @override
   Widget build(BuildContext context) {
     final stars = <Widget>[];
+
+    Intl.defaultLocale = 'pt_BR';
+    NumberFormat formatter = NumberFormat.simpleCurrency();
+
     for (var i = 1; i <= 5; i++) {
       stars.add(
         new Icon(
@@ -57,7 +67,7 @@ class _TaskState extends State<Task> {
                         child: Text('XP:'),
                       ),
                       Container(
-                        width: MediaQuery.of(context).size.width - 200,
+                        width: MediaQuery.of(context).size.width - 300,
                         child: LinearProgressIndicator(
                           color: Colors.black,
                           value: (widget.difficulty > 0)
@@ -68,7 +78,7 @@ class _TaskState extends State<Task> {
                     ],
                   ),
                   Text(
-                    'Nível $nivel',
+                    'Recompensa ${formatter.format(widget.reward)}',
                     style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -117,8 +127,11 @@ class _TaskState extends State<Task> {
                           ),
                         ),
                         Row(
-                          children: stars,
-                        )
+                          children: [
+                            Text('Dificuldade:'),
+                            ...stars,
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -133,13 +146,12 @@ class _TaskState extends State<Task> {
                           experience++;
                           if ((experience / widget.difficulty) / 10 >= 1) {
                             experience = 0;
-                            nivel++;
                           }
                         });
                       },
                       child: Column(children: [
                         const Icon(Icons.arrow_drop_up),
-                        const Text('Treinar'),
+                        const Text('Trabalhar'),
                       ]),
                     ),
                   ),
